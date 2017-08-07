@@ -1,0 +1,18 @@
+---
+title: "Simulation Exercise and Basic Data Analysis"
+author: "Jean-Paul Courneya"
+date: "8/6/2017"
+output: html_document
+---
+#This class project consists of two parts:
+#### 1. A simulation exercise.
+#### 2. Basic inferential data analysis.
+
+First you will set a working directory and load dependencies
+```{r, eval=FALSE}
+setwd()
+library(knitr)
+library(ggplot2)
+```
+***
+
