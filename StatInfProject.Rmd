@@ -2,7 +2,9 @@
 title: "Simulation Exercise and Basic Data Analysis"
 author: "Jean-Paul Courneya"
 date: "8/6/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 #This class project consists of two parts:
 #### 1. A simulation exercise.
@@ -15,4 +17,25 @@ library(knitr)
 library(ggplot2)
 ```
 ***
+#Part 1: Simulation Exercise 
 
+
+##### In this part of the project we are investigating the exponential distribution in R and comparing it with the Central Limit Theorem. The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda. Set lambda = s for all of the simulations. 
+
+##Investigating the distribution of averages of 40 exponentials.
+
+###Illustrate via simulation and associated explanatory text the properties of the distribution of the mean of 40 exponentials. 
+
+Use set.seed so that the simulation can be repeated. Setting the seed provides the same starting value to the random number generating function.
+```{r}
+set.seed(420)
+```
+
+#####Start by taking a look at the distribution of a sample of 40 random exponentials
+```{r}
+hist(rexp(40,0.2))
+```
+#####Next we will evaluate the mean of the sample data set.
+```{r}
+mean(rexp(40,0.2))
+```
