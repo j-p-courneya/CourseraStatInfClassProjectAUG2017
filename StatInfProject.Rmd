@@ -3,8 +3,8 @@ title: "Simulation Exercise and Basic Data Analysis"
 author: "Jean-Paul Courneya"
 date: "8/6/2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 #This class project consists of two parts:
 #### 1. A simulation exercise.
@@ -28,14 +28,68 @@ library(ggplot2)
 
 Use set.seed so that the simulation can be repeated. Setting the seed provides the same starting value to the random number generating function.
 ```{r}
-set.seed(420)
+set.seed(15)
 ```
 
+set some constants
+```{r}
+λ <- 0.2
+sampleSize <- 40
+simulations <- 1000
+```
 #####Start by taking a look at the distribution of a sample of 40 random exponentials
 ```{r}
-hist(rexp(40,0.2))
+SimDist <- rexp(sampleSize,0.2)
+hist(SimDist, xlab = "40 Random Exponentials", ylab = "Frequency",main = "Distribution of 40 Random Exponentials", col = "lightgreen")
 ```
-#####Next we will evaluate the mean of the sample data set.
+
+######Clearly we see that 40 random exponentials chosen look exponentially distributed.
+
+***
+
+##Calculate the Sample vs Theoretical Mean
+#####Next we will evaluate the mean of the sample data set from above.
 ```{r}
-mean(rexp(40,0.2))
+Sample.Mean<- mean(SimDist)
+cat("Sample Mean: ", Sample.Mean)
+```
+
+#####The theoretical mean for an eponential distribution as stated in the instructions is 1/λ
+```{r}
+Theoretical.Mean <- 1/λ 
+cat("Theoretical Mean: ", Theoretical.Mean)
+```
+
+The sample mean approximates the theoretical mean.
+
+***
+
+##Calculate the Sample vs Theoretical Variance
+
+```{r}
+Sample.Variance <- var(SimDist)
+cat("Sample Variance: ", Sample.Variance)
+```
+
+***
+
+```{r}
+Theoretical.Variance <- (1/λ)^2/sampleSize
+cat("theoretical variance: ", Theoretical.Variance)
+```
+
+There is a big difference between the sample variance and theoretical variance
+
+
+
+#####Now we have seen the mean of 40 random exponentials. Next we will look at the distribution of the mean of 40 exponentials run 1000 times. The Central Limit Theorem will be used to confirm our observation from the simulation below that the mean of means will approximate the theoretical mean.
+```{r}
+Simulation <- replicate(1000, mean(rexp(40,0.2)))
+hist(Simulation, xlab = "Distribution of mean of 40 exponentials run 1000 times", ylab = "Frequency", main = "Distribution of the mean of 40 exponentials run 1000 times", col = "lightgrey"  )
+```
+
+#####The data show that the data is distributed around a central point of ~5. Next we will evaluate the mean of the replicated sample data set.
+
+```{r}
+mean(replicate(1000, rexp(40,0.2)))
 ```
