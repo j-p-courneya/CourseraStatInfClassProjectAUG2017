@@ -6,6 +6,10 @@ output:
   html_document: default
   pdf_document: default
 ---
+```{r}
+library(knitr)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
 #This class project consists of two parts:
 #### 1. A simulation exercise.
 #### 2. Basic inferential data analysis.
@@ -16,6 +20,7 @@ setwd()
 library(knitr)
 library(ggplot2)
 ```
+
 ***
 #Part 1: Simulation Exercise 
 
@@ -124,9 +129,9 @@ qplot(dose, len, data = ToothGrowth, facets = supp ~ ., color = dose, xlab = "Do
 ```{r}
 f <- ggplot(ToothGrowth, aes(x=dose, y=len, fill=supp))
 f + geom_boxplot() + ggtitle("Guinea Pig Tooth\ngrowth after consumption\nof OJ or Vitamin C ") +
-  labs(x="Dose",y="Length") + 
-  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16, hjust=0.5)) +
-  theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=11))
+  labs(x="Dose (mg/day)",y="Length (mm)") + 
+  theme(plot.title = element_text(family = "serif", color="#666666", face="bold", size=16, hjust=0.5)) +
+  theme(axis.title = element_text(family = "serif", color="#666666", face="bold", size=11))
 ```
 
 ***
