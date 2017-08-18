@@ -33,7 +33,7 @@ set.seed(15)
 
 set some constants
 ```{r}
-λ <- 0.2
+lambda <- 0.2
 sampleSize <- 40
 simulations <- 1000
 ```
@@ -43,7 +43,7 @@ SimDist <- rexp(sampleSize,0.2)
 hist(SimDist, xlab = "40 Random Exponentials", ylab = "Frequency",main = "Distribution of 40 Random Exponentials", col = "lightgreen")
 ```
 
-######Clearly we see that 40 random exponentials chosen look exponentially distributed.
+###Clearly we see that 40 random exponentials chosen look exponentially distributed.
 
 ***
 
@@ -54,9 +54,9 @@ Sample.Mean<- mean(SimDist)
 cat("Sample Mean: ", Sample.Mean)
 ```
 
-#####The theoretical mean for an eponential distribution as stated in the instructions is 1/λ
+#####The theoretical mean for an eponential distribution as stated in the instructions is 1/lambda
 ```{r}
-Theoretical.Mean <- 1/λ 
+Theoretical.Mean <- 1/lambda 
 cat("Theoretical Mean: ", Theoretical.Mean)
 ```
 
@@ -74,22 +74,148 @@ cat("Sample Variance: ", Sample.Variance)
 ***
 
 ```{r}
-Theoretical.Variance <- (1/λ)^2/sampleSize
-cat("theoretical variance: ", Theoretical.Variance)
+Theoretical.Variance <- (1/lambda)^2/sampleSize 
+cat("Theoretical Variance: ", Theoretical.Variance)
 ```
 
-There is a big difference between the sample variance and theoretical variance
+There is a big difference between the sample variance and theoretical variance.
 
+***
 
-
-#####Now we have seen the mean of 40 random exponentials. Next we will look at the distribution of the mean of 40 exponentials run 1000 times. The Central Limit Theorem will be used to confirm our observation from the simulation below that the mean of means will approximate the theoretical mean.
+#####Now that we have seen the mean and variance of 40 random exponentials and compared it to the theoretical mean and variance. Next we will look at the distribution of the mean of 40 exponentials run 1000 times. 
 ```{r}
 Simulation <- replicate(1000, mean(rexp(40,0.2)))
 hist(Simulation, xlab = "Distribution of mean of 40 exponentials run 1000 times", ylab = "Frequency", main = "Distribution of the mean of 40 exponentials run 1000 times", col = "lightgrey"  )
 ```
 
-#####The data show that the data is distributed around a central point of ~5. Next we will evaluate the mean of the replicated sample data set.
+#####The data show a distribution around a central point of 5. Next we will evaluate the mean of the replicated sample data set.
 
 ```{r}
 mean(replicate(1000, rexp(40,0.2)))
 ```
+
+###This distribution looks far more Gaussian than the original exponential distribution!
+
+***
+
+#Part 2: Basic inferential data analysis.
+
+```{r}
+library(ggplot2)
+```
+
+####Load the ToothGrowth data and perform some basic exploratory data analyses
+
+```{r}
+data("ToothGrowth")
+str(ToothGrowth)
+```
+The data for the dose is currently numeric. Since the doses are factors they will be changed to factors. 
+
+```{r}
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+str(ToothGrowth)
+```
+What does the data look like?
+```{r}
+qplot(dose, len, data = ToothGrowth, facets = supp ~ ., color = dose, xlab = "Dose (mg/day)", ylab = "Tooth Length (mm)", main = "Exploratory plot of dose vs tooth length\n for Guinea Pigs given OJ vs VitaminC")
+```
+
+```{r}
+f <- ggplot(ToothGrowth, aes(x=dose, y=len, fill=supp))
+f + geom_boxplot() + ggtitle("Guinea Pig Tooth\ngrowth after consumption\nof OJ or Vitamin C ") +
+  labs(x="Dose",y="Length") + 
+  theme(plot.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=16, hjust=0.5)) +
+  theme(axis.title = element_text(family = "Trebuchet MS", color="#666666", face="bold", size=11))
+```
+
+***
+
+####A basic summary of the data
+
+```{r}
+summary(ToothGrowth)
+```
+
+####compare tooth growth by supp and dose using confidence intervals and/or hypothesis tests
+
+The overall goal of understanding this data is achieved by determining if vitamin C affects tooth growth and if it matters how the vitamin C is delivered. 
+
+A t.test can be used to compare the tooth len growth between supplements (VitaminC or OJ) and each dose.
+
+Comparison at (p < 0.05) tooth len growth at a dose of 0.5 (VitaminC or OJ)
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 0.5], ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 0.5])
+````
+
+OJ has a higher effect on tooth growth at this dose
+
+Comparison at (p < 0.05) tooth len growth at a dose of 1.0 (VitaminC or OJ)
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 1.0], ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 1.0])
+````
+
+OJ has a higher effect on tooth growth at this dose
+
+
+Comparison at (p < 0.05) tooth len growth at a dose of 2.0 (VitaminC or OJ)
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 2.0], ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 2.0])
+````
+
+####Ive just demonstrated that there is a difference in tooth growth between supplements. at the low doses (0.5, 1.0) OJ has more of an effect on Tooth growth  but not at 2.0
+
+***
+
+####Next I will compare tooth growth based on dose of supplement (OJ or VC). 
+
+First I will compare 0.5 vs 1 of OJ
+Comparison at (p < 0.05).
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 0.5], ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 1.0])
+````
+
+There is a significant difference. 
+
+Here is the comparison 0.5 vs 2 of OJ 
+Comparison at (p < 0.05).
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 0.5], ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 2.0])
+````
+
+There is a significant differnce
+
+Here is the comparison 1.0 vs 2 of OJ 
+Comparison at (p < 0.05).
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 1.0], ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 2.0])
+````
+The difference is significant but not the same maginitude of effect as between 0.5 and (1 or 2)
+
+Next I will compare the effect of Vitamin C
+
+First I will compare 0.5 vs 1 of VC
+Comparison at (p < 0.05).
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 0.5], ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 1.0])
+````
+
+There is a significant difference. 
+
+Here is the comparison 0.5 vs 2 of VC 
+Comparison at (p < 0.05).
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 0.5], ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 2.0])
+````
+
+There is a significant difference
+
+Here is the comparison 1.0 vs 2 of VC 
+Comparison at (p < 0.05).
+```{r}
+t.test(ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 1.0], ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 2.0])
+````
+
+I have just demonstrated that not only is there a difference between the supplements effect on tooth growth by dose but that also tooth growth is significantly affected by OJ and Vitamin C. There is a maximum benefit which starts to level off at a dose of 2.0 since we see the percent difference between a dose of 1 and 2 and effect of teeth growth is decreasing regardless of supplement given.
+
+Overall Guinea Pig tooth growth is most affected by OJ supplement.There is a noticible effect between doses of Vitamin C however within doses. 
