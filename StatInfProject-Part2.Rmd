@@ -3,8 +3,8 @@ title: "Basic inferential data analysis - Project Stats-Inf"
 author: "Jean-Paul Courneya"
 date: "9/5/2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 #Part 2: Basic inferential data analysis.
 
